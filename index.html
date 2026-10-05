@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Galaxy Strike: Neo Starfighter | Arcade Space Shooter</title>
+  <meta name="description" content="Emocionante shooter espacial de vista superior con oleadas, jefes, power-ups, gráficos de neón y sonido sintetizado.">
+  
+  <!-- Favicon e Iconos del Juego (16x16, 32x32, Touch Icon) -->
+  <link rel="icon" type="image/png" sizes="16x16" href="imagenes/astronave.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="imagenes/astronave.png">
+  <link rel="apple-touch-icon" href="imagenes/astronave.png">
+  <link rel="shortcut icon" href="imagenes/astronave.png">
+
+  <!-- Google Fonts Sci-Fi -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css?v=11">
+</head>
+<body>
+  <!-- Contenedor Principal del Juego -->
+  <div id="game-container">
+    <!-- Canvas del Juego -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Efecto Opcional de Pantalla CRT / Scanlines -->
+    <div id="crt-overlay" class="crt-overlay active"></div>
+
+    <!-- HUD Superior e Inferior (En Juego) -->
+    <div id="game-hud" class="hud-layer hidden">
+      <!-- Barra Superior -->
+      <header class="hud-top">
+        <div class="hud-block score-block">
+          <span class="hud-label">PUNTUACIÓN</span>
+          <span id="hud-score" class="hud-value neon-blue">000000</span>
+          <span id="hud-combo-badge" class="combo-badge hidden">x2 COMBO</span>
+        </div>
+
+        <div class="hud-block wave-block">
+          <span class="hud-label">OLEADA</span>
+          <span id="hud-wave" class="hud-value neon-cyan">1</span>
+        </div>
+
+        <div class="hud-block powerup-status-block">
+          <div id="active-powerups-container" class="active-powerups"></div>
+        </div>
+
+        <div class="hud-block status-block">
+          <div class="hud-sub-block">
+            <span class="hud-label">ESCUDO</span>
+            <div class="hud-bar-container">
+              <div id="hud-shield-bar" class="hud-bar-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div class="hud-sub-block">
+            <span class="hud-label">VIDAS</span>
+            <div id="hud-lives-container" class="lives-icons">
+              <span class="life-icon active">▲</span>
+              <span class="life-icon active">▲</span>
+              <span class="life-icon active">▲</span>
+            </div>
+          </div>
+          <div class="hud-sub-block bomb-block">
+            <span class="hud-label">BOMBA EMP [B/RMB]</span>
+            <div id="hud-bombs-container" class="bomb-icons">
+              <span class="bomb-icon active">☢</span>
+              <span class="bomb-icon active">☢</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Barra de Vida del Jefe (Visible solo durante peleas con Boss) -->
+      <div id="boss-hud-bar-container" class="boss-health-bar-container hidden">
+        <div class="boss-header-info">
+          <span id="boss-name" class="boss-name-text">⚠️ ALERTA: NAVE NODRIZA KRONOS</span>
+          <span id="boss-health-percent" class="boss-hp-text">100%</span>
+        </div>
+        <div class="boss-bar-track">
+          <div id="boss-health-bar" class="boss-bar-fill" style="width: 100%;"></div>
+        </div>
+      </div>
+
+      <!-- Banner Central para Alertas de Oleadas / Jefes / Mensajes -->
+      <div id="wave-banner" class="wave-banner hidden">
+        <h2 id="wave-banner-title" class="banner-title">OLEADA 1</h2>
+        <p id="wave-banner-subtitle" class="banner-subtitle">INVASIÓN INICIADA</p>
+      </div>
+
+      <!-- Botón de Pausa Rápida -->
+      <button id="btn-quick-pause" class="hud-pause-btn" aria-label="Pausa" title="Pausar Juego [ESC o P]">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+          <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+          <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+        </svg>
+      </button>
+    </div>
+
+    <!-- PANTALLA DE INICIO (MENU PRINCIPAL) -->
+    <div id="screen-main-menu" class="ui-screen active">
+      <div class="glass-panel main-menu-panel">
+        <div class="logo-wrapper">
+          <div class="logo-glow"></div>
+          <img src="imagenes/astronave.png" alt="Nave Espacial" class="menu-hero-ship" width="76" height="76">
+          <h1 class="game-logo">
+            <span>GALAXY</span>
+            <span class="logo-accent">STRIKE</span>
+          </h1>
+          <p class="game-tagline">NEO STARFIGHTER ARCADE</p>
+        </div>
+
+        <div class="menu-actions">
+          <button id="btn-play" class="btn-primary glow-button pulse">
+            <span class="btn-icon">▶</span> DESPEGAR MISIÓN
+          </button>
+          <button id="btn-leaderboard" class="btn-secondary">
+            <span class="btn-icon">🏆</span> TABLERO DE RÉCORDS
+          </button>
+          <button id="btn-controls" class="btn-secondary">
+            <span class="btn-icon">🎮</span> CONTROLES Y GUÍA
+          </button>
+          <button id="btn-settings" class="btn-secondary">
+            <span class="btn-icon">⚙️</span> AJUSTES
+          </button>
+        </div>
+
+        <div class="quick-controls-hint">
+          <span>⌨️ <b>WASD / Flechas</b> + <b>Espacio</b></span>
+          <span class="separator">•</span>
+          <span>🖱️ <b>Ratón / Puntero</b> para apuntar</span>
+          <span class="separator">•</span>
+          <span>💣 <b>B / Clic Derecho</b> para Bomba</span>
+        </div>
+
+        <!-- Barra de Créditos en la parte inferior -->
+        <footer class="menu-credits-bar">
+          <span>Derechos Reservados © 2026</span>
+          <span class="credits-divider">|</span>
+          <span>Desarrollado por <a href="https://telebitcomunicaciones.info" target="_blank" rel="noopener noreferrer" class="credits-link">TeleBitComunicaciones</a></span>
+        </footer>
+      </div>
+    </div>
+
+    <!-- MODAL DE PAUSA -->
+    <div id="screen-pause" class="ui-screen hidden">
+      <div class="glass-panel modal-panel">
+        <h2 class="modal-title neon-cyan">SISTEMA EN PAUSA</h2>
+        <div class="pause-stats">
+          <div class="stat-item"><span class="label">Oleada:</span> <span id="pause-wave" class="val">1</span></div>
+          <div class="stat-item"><span class="label">Puntos:</span> <span id="pause-score" class="val">0</span></div>
+          <div class="stat-item"><span class="label">Enemigos Eliminados:</span> <span id="pause-kills" class="val">0</span></div>
+        </div>
+
+        <div class="menu-actions">
+          <button id="btn-resume" class="btn-primary glow-button">
+            <span class="btn-icon">▶</span> REANUDAR
+          </button>
+          <button id="btn-restart-pause" class="btn-secondary">
+            <span class="btn-icon">🔄</span> REINICIAR MISIÓN
+          </button>
+          <button id="btn-settings-pause" class="btn-secondary">
+            <span class="btn-icon">⚙️</span> AJUSTES
+          </button>
+          <button id="btn-exit-main-menu" class="btn-danger">
+            <span class="btn-icon">🚪</span> SALIR AL MENÚ
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DE GAME OVER -->
+    <div id="screen-gameover" class="ui-screen hidden">
+      <div class="glass-panel modal-panel gameover-panel">
+        <h2 class="modal-title neon-red">NAVE DESTRUIDA</h2>
+        <p class="modal-subtitle">Señal de telemetría perdida en el sector profundo.</p>
+
+        <div class="gameover-stats">
+          <div class="big-score-box">
+            <span class="big-score-label">PUNTUACIÓN FINAL</span>
+            <span id="gameover-final-score" class="big-score-val neon-yellow">000,000</span>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-box"><span class="label">Oleada Máxima</span><span id="gameover-wave" class="val">1</span></div>
+            <div class="stat-box"><span class="label">Bajas Confirmadas</span><span id="gameover-kills" class="val">0</span></div>
+            <div class="stat-box"><span class="label">Precisión</span><span id="gameover-accuracy" class="val">0%</span></div>
+            <div class="stat-box"><span class="label">Combo Máximo</span><span id="gameover-maxcombo" class="val">x1</span></div>
+          </div>
+        </div>
+
+        <!-- Formulario para Guardar Récord si califica -->
+        <div id="high-score-form-container" class="high-score-form hidden">
+          <div class="new-record-tag">🎉 ¡NUEVO RÉCORD DE PILOTO!</div>
+          <div class="input-group">
+            <input type="text" id="player-name-input" maxlength="12" placeholder="PILOTO-01" spellcheck="false" autocomplete="off">
+            <button id="btn-save-score" class="btn-primary">GUARDAR</button>
+          </div>
+        </div>
+
+        <div class="menu-actions">
+          <button id="btn-retry" class="btn-primary glow-button">
+            <span class="btn-icon">🚀</span> REINTENTAR
+          </button>
+          <button id="btn-gameover-leaderboard" class="btn-secondary">
+            <span class="btn-icon">🏆</span> TABLERO DE RÉCORDS
+          </button>
+          <button id="btn-gameover-menu" class="btn-secondary">
+            <span class="btn-icon">🏠</span> MENÚ PRINCIPAL
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DE TABLERO DE RÉCORDS -->
+    <div id="screen-leaderboard" class="ui-screen hidden">
+      <div class="glass-panel modal-panel leaderboard-panel">
+        <h2 class="modal-title neon-yellow">🏆 SALÓN DE LA FAMA ESPACIAL</h2>
+        <p class="modal-subtitle">Los 10 mejores pilotos de la Federación Galáctica</p>
+
+        <div class="table-container">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>PILOTO</th>
+                <th>PUNTUACIÓN</th>
+                <th>OLEADA</th>
+                <th>PRECISIÓN</th>
+                <th>FECHA</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+              <!-- Rellenado dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="leaderboard-actions">
+          <button id="btn-clear-scores" class="btn-danger-outline">🗑️ BORRAR RÉCORDS</button>
+          <div class="leaderboard-nav-buttons">
+            <button id="btn-leaderboard-retry" class="btn-primary glow-button">🚀 REINTENTAR</button>
+            <button id="btn-leaderboard-menu" class="btn-secondary">🏠 MENÚ</button>
+            <button id="btn-close-leaderboard" class="btn-secondary">CERRAR</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DE CONTROLES Y GUÍA -->
+    <div id="screen-controls" class="ui-screen hidden">
+      <div class="glass-panel modal-panel guide-panel">
+        <h2 class="modal-title neon-blue">MANUAL DE COMBATE Y CONTROLES</h2>
+
+        <div class="guide-tabs-content">
+          <div class="guide-section">
+            <h3 class="section-heading">🎮 Esquemas de Control</h3>
+            <div class="controls-grid">
+              <div class="control-card">
+                <span class="key-combo">W A S D / Flechas</span>
+                <span class="action-desc">Mover la nave con inercia y ladeo</span>
+              </div>
+              <div class="control-card">
+                <span class="key-combo">Espacio / J / Clic Izq.</span>
+                <span class="action-desc">Disparar armas principales</span>
+              </div>
+              <div class="control-card">
+                <span class="key-combo">B / Clic Der. / K</span>
+                <span class="action-desc">Detonar Bomba EMP destructora</span>
+              </div>
+              <div class="control-card">
+                <span class="key-combo">Mover Ratón / Táctil</span>
+                <span class="action-desc">Seguimiento directo de cursor suave</span>
+              </div>
+              <div class="control-card">
+                <span class="key-combo">ESC / P</span>
+                <span class="action-desc">Pausar / Reanudar partida</span>
+              </div>
+              <div class="control-card">
+                <span class="key-combo">M</span>
+                <span class="action-desc">Silenciar / Activar Sonido</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="guide-section">
+            <h3 class="section-heading">⚡ Power-ups y Mejoras</h3>
+            <div class="powerups-guide-grid">
+              <div class="pu-card">
+                <div class="pu-icon-circle pu-spread">🔫</div>
+                <div>
+                  <strong>Multi-Disparo</strong>
+                  <p>Aumenta los cañones: Doble, Triple Spread, Cuádruple Plasma y Misiles.</p>
+                </div>
+              </div>
+              <div class="pu-card">
+                <div class="pu-icon-circle pu-shield">🛡️</div>
+                <div>
+                  <strong>Escudo de Plasma</strong>
+                  <p>Barrera protectora temporal que absorbe disparos y colisiones.</p>
+                </div>
+              </div>
+              <div class="pu-card">
+                <div class="pu-icon-circle pu-speed">⚡</div>
+                <div>
+                  <strong>Hiper-Velocidad</strong>
+                  <p>Mayor velocidad de maniobra y cadencia de fuego acelerada.</p>
+                </div>
+              </div>
+              <div class="pu-card">
+                <div class="pu-icon-circle pu-nuke">💣</div>
+                <div>
+                  <strong>Bomba EMP</strong>
+                  <p>Aniquila proyectiles y enemigos ordinarios en toda la pantalla.</p>
+                </div>
+              </div>
+              <div class="pu-card">
+                <div class="pu-icon-circle pu-life">❤️</div>
+                <div>
+                  <strong>Vida / Reparación</strong>
+                  <p>Restaura la integridad del casco o añade una vida de reserva.</p>
+                </div>
+              </div>
+              <div class="pu-card">
+                <div class="pu-icon-circle pu-magnet">🧲</div>
+                <div>
+                  <strong>Imán de Cristales</strong>
+                  <p>Atrae automáticamente todos los orbes de poder y puntos.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="btn-close-controls" class="btn-primary">ENTENDIDO</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DE AJUSTES -->
+    <div id="screen-settings" class="ui-screen hidden">
+      <div class="glass-panel modal-panel settings-panel">
+        <h2 class="modal-title neon-purple">⚙️ AJUSTES DEL SISTEMA</h2>
+
+        <div class="settings-list">
+          <div class="setting-row">
+            <label for="slider-master-volume">Volumen Maestro</label>
+            <div class="slider-wrapper">
+              <input type="range" id="slider-master-volume" min="0" max="100" value="80">
+              <span id="val-master-volume" class="range-val">80%</span>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <label for="slider-sfx-volume">Efectos de Sonido (SFX)</label>
+            <div class="slider-wrapper">
+              <input type="range" id="slider-sfx-volume" min="0" max="100" value="85">
+              <span id="val-sfx-volume" class="range-val">85%</span>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <label for="slider-music-volume">Música Sintetizada</label>
+            <div class="slider-wrapper">
+              <input type="range" id="slider-music-volume" min="0" max="100" value="65">
+              <span id="val-music-volume" class="range-val">65%</span>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <label for="toggle-crt">Efecto Retro CRT / Scanlines</label>
+            <label class="switch">
+              <input type="checkbox" id="toggle-crt" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <label for="toggle-screen-shake">Vibración de Pantalla (Screen Shake)</label>
+            <label class="switch">
+              <input type="checkbox" id="toggle-screen-shake" checked>
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <label for="select-control-mode">Modo de Control Principal</label>
+            <select id="select-control-mode" class="sci-select">
+              <option value="hybrid">Híbrido (Teclado + Ratón / Puntero)</option>
+              <option value="keyboard">Solo Teclado</option>
+              <option value="mouse">Solo Ratón / Puntero</option>
+            </select>
+          </div>
+
+          <div class="setting-row">
+            <label for="toggle-autofire">Disparo Automático Continuo</label>
+            <label class="switch">
+              <input type="checkbox" id="toggle-autofire">
+              <span class="slider-round"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="btn-close-settings" class="btn-primary">GUARDAR Y CERRAR</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts Modulares del Juego -->
+  <script src="js/audio.js?v=11"></script>
+  <script src="js/storage.js?v=11"></script>
+  <script src="js/particles.js?v=11"></script>
+  <script src="js/stars.js?v=11"></script>
+  <script src="js/powerups.js?v=11"></script>
+  <script src="js/player.js?v=11"></script>
+  <script src="js/enemies.js?v=11"></script>
+  <script src="js/waves.js?v=11"></script>
+  <script src="js/engine.js?v=11"></script>
+  <script src="js/main.js?v=11"></script>
+</body>
+</html>
