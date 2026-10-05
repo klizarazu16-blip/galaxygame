@@ -688,6 +688,21 @@ button {
   box-shadow: 0 0 12px var(--color-red);
 }
 
+.btn-pwa-badge {
+  background: linear-gradient(135deg, rgba(30, 88, 216, 0.35) 0%, rgba(41, 128, 185, 0.35) 100%);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: var(--color-cyan);
+  font-size: 0.9rem;
+}
+
+.btn-pwa-badge:hover {
+  background: linear-gradient(135deg, rgba(30, 88, 216, 0.7) 0%, rgba(0, 240, 255, 0.6) 100%);
+  color: #fff;
+  border-color: var(--color-cyan);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.45);
+  transform: translateY(-2px);
+}
+
 .pulse {
   animation: buttonPulse 1.8s infinite;
 }
@@ -702,6 +717,185 @@ button {
 .modal-panel {
   width: 580px;
   gap: 20px;
+}
+
+/* ==========================================================================
+   PWA INSTALLATION MODAL
+   ========================================================================== */
+
+.pwa-modal-panel {
+  width: 500px;
+  max-width: 92vw;
+  background: rgba(14, 20, 36, 0.96);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), inset 0 0 25px rgba(0, 240, 255, 0.1);
+  border-radius: 18px;
+  padding: 26px 28px;
+  gap: 16px;
+  position: relative;
+  text-align: left;
+  align-items: stretch;
+  animation: modalPop 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-close-icon {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.25rem;
+  font-weight: 700;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.modal-close-icon:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  transform: rotate(90deg);
+}
+
+.pwa-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding-right: 28px;
+}
+
+.pwa-icon-box {
+  width: 58px;
+  height: 58px;
+  min-width: 58px;
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.2) 0%, rgba(10, 15, 30, 0.9) 100%);
+  border: 1px solid var(--color-cyan);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
+}
+
+.pwa-app-icon {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.8));
+}
+
+.pwa-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pwa-app-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pwa-app-name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.pwa-app-badge {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(243, 156, 18, 0.4);
+}
+
+.pwa-subtitle {
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-cyan);
+}
+
+.pwa-description {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  color: #d1d5db;
+  line-height: 1.45;
+  margin: 4px 0 6px 0;
+}
+
+.pwa-ios-guide {
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px dashed rgba(0, 240, 255, 0.35);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: var(--color-cyan);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pwa-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 6px;
+}
+
+.pwa-install-btn {
+  flex: 1.4;
+  background: linear-gradient(135deg, #1e58d8 0%, #2980b9 100%);
+  color: #ffffff;
+  padding: 12px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(30, 88, 216, 0.45);
+}
+
+.pwa-install-btn:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.65);
+}
+
+.pwa-dismiss-btn {
+  flex: 0.8;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  border-radius: 10px;
+}
+
+.pwa-dismiss-btn:hover {
+  background: rgba(51, 65, 85, 0.8);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .modal-title {

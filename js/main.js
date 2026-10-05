@@ -309,6 +309,118 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 6. Iniciar bucle de animación
+  // 6. Configuración e Instalación PWA (Progressive Web App)
+  const modalPwa = document.getElementById('modal-pwa');
+  const btnOpenPwa = document.getElementById('btn-open-pwa');
+  const btnPwaInstall = document.getElementById('btn-pwa-install');
+  const btnPwaDismiss = document.getElementById('btn-pwa-dismiss');
+  const btnPwaClose = document.getElementById('btn-pwa-close');
+  const pwaIosGuide = document.getElementById('pwa-ios-instructions');
+
+  let deferredPrompt = null;
+  const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+  // Registrar Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then((reg) => {
+          console.log('Galaxy Strike SW Registrado con éxito:', reg.scope);
+        })
+        .catch((err) => {
+          console.warn('Fallo al registrar Service Worker:', err);
+        });
+    });
+  }
+
+  // Interceptar evento de instalación de Chromium
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    // Mostrar modal automáticamente en la primera visita si no se ha descartado en la sesión
+    const wasDismissed = sessionStorage.getItem('galaxy_pwa_dismissed');
+    if (!isStandalone && !wasDismissed) {
+      setTimeout(() => {
+        if (Game.state === 'MENU') {
+          showPwaModal();
+        }
+      }, 1500);
+    }
+  });
+
+  // Evento cuando la aplicación ya fue instalada
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    hidePwaModal();
+    if (btnOpenPwa) {
+      btnOpenPwa.style.display = 'none';
+    }
+    console.log('Galaxy Strike App instalada exitosamente.');
+  });
+
+  function showPwaModal() {
+    if (modalPwa) {
+      if (isIos && !isStandalone) {
+        if (pwaIosGuide) pwaIosGuide.classList.remove('hidden');
+      }
+      modalPwa.classList.remove('hidden');
+    }
+  }
+
+  function hidePwaModal() {
+    if (modalPwa) {
+      modalPwa.classList.add('hidden');
+    }
+  }
+
+  if (btnOpenPwa) {
+    if (isStandalone) {
+      btnOpenPwa.style.display = 'none';
+    } else {
+      btnOpenPwa.addEventListener('click', () => {
+        showPwaModal();
+      });
+    }
+  }
+
+  if (btnPwaClose) {
+    btnPwaClose.addEventListener('click', () => {
+      sessionStorage.setItem('galaxy_pwa_dismissed', '1');
+      hidePwaModal();
+    });
+  }
+
+  if (btnPwaDismiss) {
+    btnPwaDismiss.addEventListener('click', () => {
+      sessionStorage.setItem('galaxy_pwa_dismissed', '1');
+      hidePwaModal();
+    });
+  }
+
+  if (btnPwaInstall) {
+    btnPwaInstall.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const choiceResult = await deferredPrompt.userChoice;
+        if (choiceResult.outcome === 'accepted') {
+          console.log('Usuario aceptó instalar la PWA');
+        } else {
+          console.log('Usuario declinó la instalación');
+        }
+        deferredPrompt = null;
+        hidePwaModal();
+      } else if (isIos) {
+        if (pwaIosGuide) pwaIosGuide.classList.remove('hidden');
+      } else {
+        // En navegadores de escritorio que ya tienen el icono en la barra o no disparan prompt
+        alert('💡 Para instalar:\nHaz clic en el icono de instalación (➕ / 📲) en la barra de direcciones de tu navegador, o añade a la pantalla de inicio desde el menú.');
+        hidePwaModal();
+      }
+    });
+  }
+
+  // 7. Iniciar bucle de animación
   requestAnimationFrame((t) => Game.loop(t));
 });

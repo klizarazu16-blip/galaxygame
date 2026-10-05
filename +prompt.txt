@@ -120,6 +120,6 @@ Puedes refrescar tu navegador en http://localhost:8080 con Ctrl + F5 para ver el
 
 **** muy bien ahora lo vamos a subir al repositorio de github con la url: "https://github.com/klizarazu16-blip/galaxygame", ya estan abiertos los accesos para que lo hagas, sin embargo si tienes preguntas hazmelas saber.
 *****
-
-*** ok. vamos a incluir la opcion de ventana modal de instalar como aplicacion PWA en dispositivos moviles, tablets o pc, para que se ejecute directamente el juego. Permite seleccionar la opcion de botones: "INSTALAR APLICACION", "Ahora no" y tambien ubicar el signo "X" en la parte superior derecha de la ventana modal y permita cerrar. te comparto imagen para que te guies usando los colores y un texto referente para la aplicacion.
+Lo que sigue>>
+*** ok. vamos a incluir la opcion de ventana modal para instalar como aplicacion PWA en dispositivos moviles, tablets o pc, para que se ejecute directamente el juego y pueda ser jugable con mayor velocidad, ya que he revisado en movil y alcanza a quedarse un poco lento el avance de la nave. Permite seleccionar la opcion de botones: "INSTALAR APLICACION", "Ahora no" y tambien ubicar el signo "X" en la parte superior derecha de la ventana modal y permita cerrar. te comparto imagen en la carpeta del proyecto: "imagenes" con el nombre de: "paraPWA.png" para que te guies usando los colores y un texto referente para la aplicacion. Haz esto y actualiza..
 ****

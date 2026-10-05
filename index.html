@@ -6,6 +6,14 @@
   <title>Galaxy Strike: Neo Starfighter | Arcade Space Shooter</title>
   <meta name="description" content="Emocionante shooter espacial de vista superior con oleadas, jefes, power-ups, gráficos de neón y sonido sintetizado.">
   
+  <!-- PWA Manifest & App Config -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#05060f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Galaxy Strike">
+  <meta name="mobile-web-app-capable" content="yes">
+
   <!-- Favicon e Iconos del Juego (16x16, 32x32, Touch Icon) -->
   <link rel="icon" type="image/png" sizes="16x16" href="imagenes/astronave.png">
   <link rel="icon" type="image/png" sizes="32x32" href="imagenes/astronave.png">
@@ -17,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="style.css?v=11">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
   <!-- Contenedor Principal del Juego -->
@@ -123,6 +131,9 @@
           </button>
           <button id="btn-settings" class="btn-secondary">
             <span class="btn-icon">⚙️</span> AJUSTES
+          </button>
+          <button id="btn-open-pwa" class="btn-pwa-badge">
+            <span class="btn-icon">📲</span> INSTALAR APLICACIÓN
           </button>
         </div>
 
@@ -408,18 +419,58 @@
       </div>
     </div>
 
+    <!-- VENTANA MODAL INSTALACIÓN PWA -->
+    <div id="modal-pwa" class="ui-screen hidden">
+      <div class="glass-panel pwa-modal-panel">
+        <button id="btn-pwa-close" class="modal-close-icon" aria-label="Cerrar modal">✕</button>
+
+        <div class="pwa-header">
+          <div class="pwa-icon-box">
+            <img src="imagenes/astronave.png" alt="Galaxy Strike App" class="pwa-app-icon">
+          </div>
+          <div class="pwa-title-group">
+            <div class="pwa-app-heading">
+              <span class="pwa-app-name">GALAXY STRIKE</span>
+              <span class="pwa-app-badge">✨ APP</span>
+            </div>
+            <p class="pwa-subtitle">¡Instala nuestra App en tu teléfono o tablet!</p>
+          </div>
+        </div>
+
+        <p class="pwa-description">
+          Acceso rápido, mayor velocidad y rendimiento fluido a pantalla completa sin abrir el navegador.
+        </p>
+
+        <!-- Guía para iOS Safari -->
+        <div id="pwa-ios-instructions" class="pwa-ios-guide hidden">
+          <p><strong>📱 Para instalar en iPhone o iPad:</strong></p>
+          <p>1. Toca el botón <strong>Compartir ⎋</strong> en la barra de Safari.</p>
+          <p>2. Selecciona <strong>"Añadir a pantalla de inicio ➕"</strong>.</p>
+        </div>
+
+        <div class="pwa-actions">
+          <button id="btn-pwa-install" class="btn-primary pwa-install-btn">
+            <span class="btn-icon">📥</span> Instalar Aplicación
+          </button>
+          <button id="btn-pwa-dismiss" class="btn-secondary pwa-dismiss-btn">
+            Ahora no
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Scripts Modulares del Juego -->
-  <script src="js/audio.js?v=12"></script>
-  <script src="js/storage.js?v=12"></script>
-  <script src="js/particles.js?v=12"></script>
-  <script src="js/stars.js?v=12"></script>
-  <script src="js/powerups.js?v=12"></script>
-  <script src="js/player.js?v=12"></script>
-  <script src="js/enemies.js?v=12"></script>
-  <script src="js/waves.js?v=12"></script>
-  <script src="js/engine.js?v=12"></script>
-  <script src="js/main.js?v=12"></script>
+  <script src="js/audio.js?v=13"></script>
+  <script src="js/storage.js?v=13"></script>
+  <script src="js/particles.js?v=13"></script>
+  <script src="js/stars.js?v=13"></script>
+  <script src="js/powerups.js?v=13"></script>
+  <script src="js/player.js?v=13"></script>
+  <script src="js/enemies.js?v=13"></script>
+  <script src="js/waves.js?v=13"></script>
+  <script src="js/engine.js?v=13"></script>
+  <script src="js/main.js?v=13"></script>
 </body>
 </html>
