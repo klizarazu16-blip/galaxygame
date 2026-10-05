@@ -132,7 +132,7 @@ class Player {
     this.friction = 0.86;
     this.tilt = 0; // Ángulo de ladeo en giros (-0.35 a 0.35 rad)
 
-    this.radius = 22;
+    this.radius = 30;
     this.lives = 3;
     this.maxShield = 100;
     this.shield = 100;
@@ -290,46 +290,46 @@ class Player {
     switch (tier) {
       case 1:
         // Disparo central único
-        this.bullets.push(new Bullet(this.x, this.y - 20, 0, -bulletSpeed, { damage: 1, color: '#00f0ff' }));
-        Particles.addMuzzleFlash(this.x, this.y - 22, 10, '#00f0ff');
+        this.bullets.push(new Bullet(this.x, this.y - 30, 0, -bulletSpeed, { damage: 1, color: '#00f0ff' }));
+        Particles.addMuzzleFlash(this.x, this.y - 34, 12, '#00f0ff');
         break;
 
       case 2:
         // Doble láser
-        this.bullets.push(new Bullet(this.x - 12, this.y - 12, 0, -bulletSpeed, { damage: 1, color: '#00f0ff' }));
-        this.bullets.push(new Bullet(this.x + 12, this.y - 12, 0, -bulletSpeed, { damage: 1, color: '#00f0ff' }));
-        Particles.addMuzzleFlash(this.x - 12, this.y - 14, 9, '#00f0ff');
-        Particles.addMuzzleFlash(this.x + 12, this.y - 14, 9, '#00f0ff');
+        this.bullets.push(new Bullet(this.x - 18, this.y - 14, 0, -bulletSpeed, { damage: 1, color: '#00f0ff' }));
+        this.bullets.push(new Bullet(this.x + 18, this.y - 14, 0, -bulletSpeed, { damage: 1, color: '#00f0ff' }));
+        Particles.addMuzzleFlash(this.x - 18, this.y - 18, 10, '#00f0ff');
+        Particles.addMuzzleFlash(this.x + 18, this.y - 18, 10, '#00f0ff');
         break;
 
       case 3:
         // Triple láser en abanico
-        this.bullets.push(new Bullet(this.x, this.y - 20, 0, -bulletSpeed, { damage: 1.2, color: '#ffe600' }));
-        this.bullets.push(new Bullet(this.x - 14, this.y - 10, -2.5, -bulletSpeed * 0.95, { damage: 1, color: '#ffe600' }));
-        this.bullets.push(new Bullet(this.x + 14, this.y - 10, 2.5, -bulletSpeed * 0.95, { damage: 1, color: '#ffe600' }));
-        Particles.addMuzzleFlash(this.x, this.y - 22, 12, '#ffe600');
-        Particles.addMuzzleFlash(this.x - 14, this.y - 12, 9, '#ffe600');
-        Particles.addMuzzleFlash(this.x + 14, this.y - 12, 9, '#ffe600');
+        this.bullets.push(new Bullet(this.x, this.y - 30, 0, -bulletSpeed, { damage: 1.2, color: '#ffe600' }));
+        this.bullets.push(new Bullet(this.x - 22, this.y - 14, -2.5, -bulletSpeed * 0.95, { damage: 1, color: '#ffe600' }));
+        this.bullets.push(new Bullet(this.x + 22, this.y - 14, 2.5, -bulletSpeed * 0.95, { damage: 1, color: '#ffe600' }));
+        Particles.addMuzzleFlash(this.x, this.y - 34, 14, '#ffe600');
+        Particles.addMuzzleFlash(this.x - 22, this.y - 16, 11, '#ffe600');
+        Particles.addMuzzleFlash(this.x + 22, this.y - 16, 11, '#ffe600');
         break;
 
       case 4:
         // Cuádruple cañón de plasma
-        this.bullets.push(new Bullet(this.x - 16, this.y - 14, -1, -bulletSpeed, { damage: 1.8, isPlasma: true, radius: 6, color: '#ff0077' }));
-        this.bullets.push(new Bullet(this.x - 6, this.y - 20, 0, -bulletSpeed, { damage: 1.8, isPlasma: true, radius: 6, color: '#00f0ff' }));
-        this.bullets.push(new Bullet(this.x + 6, this.y - 20, 0, -bulletSpeed, { damage: 1.8, isPlasma: true, radius: 6, color: '#00f0ff' }));
-        this.bullets.push(new Bullet(this.x + 16, this.y - 14, 1, -bulletSpeed, { damage: 1.8, isPlasma: true, radius: 6, color: '#ff0077' }));
-        Particles.addMuzzleFlash(this.x, this.y - 20, 16, '#00f0ff');
+        this.bullets.push(new Bullet(this.x - 24, this.y - 16, -1, -bulletSpeed, { damage: 1.8, isPlasma: true, radius: 7, color: '#ff0077' }));
+        this.bullets.push(new Bullet(this.x - 8, this.y - 28, 0, -bulletSpeed, { damage: 1.8, isPlasma: true, radius: 7, color: '#00f0ff' }));
+        this.bullets.push(new Bullet(this.x + 8, this.y - 28, 0, -bulletSpeed, { damage: 1.8, isPlasma: true, radius: 7, color: '#00f0ff' }));
+        this.bullets.push(new Bullet(this.x + 24, this.y - 16, 1, -bulletSpeed, { damage: 1.8, isPlasma: true, radius: 7, color: '#ff0077' }));
+        Particles.addMuzzleFlash(this.x, this.y - 30, 18, '#00f0ff');
         break;
 
       case 5:
       default:
         // Mega Spread + Cañón pesado
-        this.bullets.push(new Bullet(this.x, this.y - 24, 0, -bulletSpeed * 1.1, { damage: 3, isPlasma: true, radius: 8, color: '#00ff88' }));
-        this.bullets.push(new Bullet(this.x - 14, this.y - 14, -2.8, -bulletSpeed, { damage: 1.5, color: '#00f0ff' }));
-        this.bullets.push(new Bullet(this.x + 14, this.y - 14, 2.8, -bulletSpeed, { damage: 1.5, color: '#00f0ff' }));
-        this.bullets.push(new Bullet(this.x - 22, this.y - 8, -5.2, -bulletSpeed * 0.9, { damage: 1.2, color: '#ffe600' }));
-        this.bullets.push(new Bullet(this.x + 22, this.y - 8, 5.2, -bulletSpeed * 0.9, { damage: 1.2, color: '#ffe600' }));
-        Particles.addMuzzleFlash(this.x, this.y - 24, 18, '#00ff88');
+        this.bullets.push(new Bullet(this.x, this.y - 36, 0, -bulletSpeed * 1.1, { damage: 3, isPlasma: true, radius: 9, color: '#00ff88' }));
+        this.bullets.push(new Bullet(this.x - 18, this.y - 20, -2.8, -bulletSpeed, { damage: 1.5, color: '#00f0ff' }));
+        this.bullets.push(new Bullet(this.x + 18, this.y - 20, 2.8, -bulletSpeed, { damage: 1.5, color: '#00f0ff' }));
+        this.bullets.push(new Bullet(this.x - 30, this.y - 10, -5.2, -bulletSpeed * 0.9, { damage: 1.2, color: '#ffe600' }));
+        this.bullets.push(new Bullet(this.x + 30, this.y - 10, 5.2, -bulletSpeed * 0.9, { damage: 1.2, color: '#ffe600' }));
+        Particles.addMuzzleFlash(this.x, this.y - 36, 20, '#00ff88');
         break;
     }
 
@@ -337,8 +337,8 @@ class Player {
     if (tier >= 5 && this.missileCooldown <= 0) {
       this.missileCooldown = 28;
       Sound.playMissileLaunch();
-      this.bullets.push(new Bullet(this.x - 24, this.y, -4, -3, { isMissile: true, damage: 3.5, color: '#ff3344' }));
-      this.bullets.push(new Bullet(this.x + 24, this.y, 4, -3, { isMissile: true, damage: 3.5, color: '#ff3344' }));
+      this.bullets.push(new Bullet(this.x - 32, this.y + 4, -4, -3, { isMissile: true, damage: 3.5, color: '#ff3344' }));
+      this.bullets.push(new Bullet(this.x + 32, this.y + 4, 4, -3, { isMissile: true, damage: 3.5, color: '#ff3344' }));
     }
   }
 
@@ -423,15 +423,16 @@ class Player {
     this.tilt += (targetTilt - this.tilt) * 0.15 * dt;
 
     // Limitar dentro de la pantalla
-    const margin = 26;
+    const margin = 36;
     if (this.x < margin) { this.x = margin; this.vx = 0; }
     if (this.x > this.canvasWidth - margin) { this.x = this.canvasWidth - margin; this.vx = 0; }
     if (this.y < margin) { this.y = margin; this.vy = 0; }
     if (this.y > this.canvasHeight - margin) { this.y = this.canvasHeight - margin; this.vy = 0; }
 
     // Generar partículas de propulsor
-    Particles.addThrusterParticle(this.x - 8, this.y + 20, isSpeed);
-    Particles.addThrusterParticle(this.x + 8, this.y + 20, isSpeed);
+    Particles.addThrusterParticle(this.x, this.y + 32, isSpeed);
+    Particles.addThrusterParticle(this.x - 10, this.y + 30, isSpeed);
+    Particles.addThrusterParticle(this.x + 10, this.y + 30, isSpeed);
 
     // Disparo
     if (input.fire || input.autofire) {
@@ -462,7 +463,7 @@ class Player {
     const hasActiveShield = this.activeEffects.shield > 0;
     if (hasActiveShield || this.shieldHitEffect > 0) {
       ctx.save();
-      const shieldRadius = this.radius + 14;
+      const shieldRadius = this.radius + 16;
       const shieldAlpha = hasActiveShield ? 0.45 + Math.sin(Date.now() * 0.008) * 0.15 : this.shieldHitEffect * 0.6;
       const shieldColor = hasActiveShield ? '#0088ff' : '#00f0ff';
 
@@ -494,7 +495,7 @@ class Player {
       ctx.shadowBlur = 10;
       ctx.globalAlpha = 0.5;
       ctx.beginPath();
-      ctx.arc(0, 0, this.radius + 6, 0, Math.PI * 2);
+      ctx.arc(0, 0, this.radius + 8, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
     }
@@ -504,7 +505,7 @@ class Player {
     ctx.shadowBlur = 14;
 
     if (this.shipImage && this.shipImage.complete && this.shipImage.naturalWidth > 0) {
-      const shipSize = 52;
+      const shipSize = 80;
       ctx.drawImage(this.shipImage, -shipSize / 2, -shipSize / 2, shipSize, shipSize);
     } else {
       // Dibujo Vectorial de Respaldo
