@@ -16,6 +16,14 @@ class GameEngine {
     this.lastTime = 0;
     this.fps = 60;
 
+    // Rendimiento: detectar dispositivos táctiles (móvil / tablet)
+    this.isMobile = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) ||
+      /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    this.lowFx = false;
+    this.hudTimer = 0;
+    this.perfSampleTime = 0;
+    this.perfSampleFrames = 0;
+
     this.input = {
       up: false,
       down: false,
@@ -32,8 +40,25 @@ class GameEngine {
     };
 
     this.player = null;
+    if (this.isMobile) this.enableLowFx();
     this.initCanvas();
     this.initInputs();
+  }
+
+  /**
+   * Modo de efectos reducidos: desactiva shadowBlur (el efecto más costoso del
+   * canvas en móviles) y limita la cantidad de partículas simultáneas.
+   */
+  enableLowFx() {
+    if (this.lowFx) return;
+    this.lowFx = true;
+    Object.defineProperty(this.ctx, 'shadowBlur', {
+      get: () => 0,
+      set: () => {},
+      configurable: true
+    });
+    Particles.maxParticles = 140;
+    console.log('Galaxy Strike: modo de alto rendimiento activado');
   }
 
   initCanvas() {
@@ -42,7 +67,8 @@ class GameEngine {
   }
 
   resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // En móviles se limita la resolución interna para reducir píxeles a dibujar
+    const dpr = Math.min(window.devicePixelRatio || 1, this.isMobile ? 1.5 : 2);
     this.width = window.innerWidth;
     this.height = window.innerHeight;
 
@@ -179,6 +205,7 @@ class GameEngine {
     if (this.state === 'PLAYING' && this.player) {
       this.player.triggerBomb(Enemies.enemies, Enemies.enemyBullets);
       this.updateHUD();
+      this.hudTimer = 0;
     }
   }
 
@@ -387,24 +414,49 @@ class GameEngine {
     const deltaMs = timestamp - this.lastTime;
     this.lastTime = timestamp;
 
-    // Normalizar a 60 FPS (dt = 1.0 a 60 FPS)
-    const dt = Math.min(deltaMs / (1000 / 60), 2.5);
+    // Normalizar a 60 FPS (dt = 1.0 a 60 FPS). Tope de 4 para no ralentizar
+    // el juego cuando el dispositivo baja de FPS (antes 2.5 = juego en cámara lenta).
+    const dt = Math.min(deltaMs / (1000 / 60), 4);
 
     // 1. Actualizar estado
     Stars.update(dt);
     Particles.update(dt);
 
     if (this.state === 'PLAYING') {
-      this.player.update(dt, this.input, Enemies.enemies);
-      Enemies.update(dt, this.player);
-      Powerups.update(dt, this.player);
-      Waves.update(dt, this.player);
+      // Sub-pasos de física: con FPS bajos se divide el avance en pasos pequeños
+      // para mantener la velocidad real y evitar que los disparos atraviesen enemigos.
+      const steps = Math.max(1, Math.ceil(dt / 1.5));
+      const stepDt = dt / steps;
+      for (let i = 0; i < steps && this.state === 'PLAYING'; i++) {
+        this.player.update(stepDt, this.input, Enemies.enemies);
+        Enemies.update(stepDt, this.player);
+        Powerups.update(stepDt, this.player);
+        Waves.update(stepDt, this.player);
+        this.checkCollisions();
+      }
 
-      this.checkCollisions();
-      this.updateHUD();
+      // HUD (DOM) actualizado ~12 veces por segundo en vez de en cada frame
+      this.hudTimer -= deltaMs;
+      if (this.hudTimer <= 0) {
+        this.updateHUD();
+        this.hudTimer = 80;
+      }
+
+      // Calidad adaptativa: si el FPS promedio cae por debajo de 45, reducir efectos
+      if (!this.lowFx && deltaMs < 250) {
+        this.perfSampleTime += deltaMs;
+        this.perfSampleFrames++;
+        if (this.perfSampleTime >= 2000) {
+          const avgFps = (this.perfSampleFrames * 1000) / this.perfSampleTime;
+          if (avgFps < 45) this.enableLowFx();
+          this.perfSampleTime = 0;
+          this.perfSampleFrames = 0;
+        }
+      }
 
       // Chequear si el jugador murió
       if (this.player.lives <= 0) {
+        this.updateHUD();
         this.gameOver();
       }
     }

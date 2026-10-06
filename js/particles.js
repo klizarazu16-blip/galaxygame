@@ -17,6 +17,9 @@ class ParticleSystem {
     this.shakeX = 0;
     this.shakeY = 0;
     this.shakeEnabled = true;
+
+    // Límite de partículas simultáneas (se reduce en modo de alto rendimiento)
+    this.maxParticles = 400;
   }
 
   reset() {
@@ -198,6 +201,11 @@ class ParticleSystem {
       if (p.alpha <= 0) {
         this.particles.splice(i, 1);
       }
+    }
+
+    // Descartar las partículas más antiguas si se supera el límite
+    if (this.particles.length > this.maxParticles) {
+      this.particles.splice(0, this.particles.length - this.maxParticles);
     }
 
     // 5. Textos flotantes

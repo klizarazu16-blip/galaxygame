@@ -3,7 +3,7 @@
  * Cache-First offline caching strategy for maximum speed and instant gameplay.
  */
 
-const CACHE_NAME = 'galaxy-strike-v1';
+const CACHE_NAME = 'galaxy-strike-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
